@@ -1,11 +1,10 @@
 package org.ticket.model;
 
-import org.hibernate.annotations.Entity;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name="TICKET")
+@Table(name="TB_TICKET")
 public class Ticket {
 
     @Id
@@ -28,6 +27,26 @@ public class Ticket {
 
     @Column(name="TICKET_PRIORITY")
     private TicketPriority ticketPriority;
+
+    public long getTicketId() {
+        return ticketId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public User getIssuer() {
+        return issuer;
+    }
+
+    public TicketPriority getTicketPriority() {
+        return ticketPriority;
+    }
 
     Ticket(String title, String content, TicketPriority ticketPriority, User issuer) {
         this.title = title;
