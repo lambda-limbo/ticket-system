@@ -10,7 +10,7 @@ public class Ticket {
     @Id
     @GeneratedValue
     @Column(name="TICKET_ID")
-    private long ticketId;
+    private long id;
     @Column(name="TICKET_TITLE")
     private String title;
     @Column(name="TICKET_CONTENT")
@@ -29,7 +29,7 @@ public class Ticket {
     private TicketPriority ticketPriority;
 
     public long getTicketId() {
-        return ticketId;
+        return id;
     }
 
     public String getTitle() {
