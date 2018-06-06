@@ -1,7 +1,5 @@
 package org.ticket;
 
-import org.ticket.model.User;
-import org.ticket.model.dao.JPAConn;
 import org.ticket.model.utils.Logger;
 import org.ticket.model.utils.Properties;
 import org.ticket.view.Greetings;
@@ -27,8 +25,6 @@ public class Main {
         } catch(Exception ex) {
             ex.printStackTrace();
         }
-
-
 
         // Open the main window
         new Greetings();
