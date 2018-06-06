@@ -4,8 +4,10 @@ import org.ticket.model.utils.Properties;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Greetings {
+public class Greetings implements ActionListener {
 
     private JFrame frame;
     private JPanel panel;
@@ -20,14 +22,14 @@ public class Greetings {
         frame = new JFrame();
         panel = new JPanel();
 
-        frame.setTitle("Ticket System");
-        //frame.setResizable(false);
+        frame.setTitle("Bem vindo ao Ticket System");
+        frame.setResizable(false);
         frame.setSize(600, 400);
         // I will manually set the position of the elements
         panel.setLayout(null);
 
-        lapp.setBounds(220, 30, 250, 30);
-        lapp.setFont(new Font("Arial", Font.ITALIC, 22));
+        lapp.setBounds(195, 30, 250, 40);
+        lapp.setFont(new Font("Arial", Font.ITALIC | Font.BOLD, 35));
         panel.add(lapp);
 
         lversion.setBounds(530, 340, 150, 30);
@@ -40,9 +42,24 @@ public class Greetings {
         bregister.setBounds(320, 200, 100, 30);
         panel.add(bregister);
 
+        blogin.addActionListener(this);
+        bregister.addActionListener(this);
+
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource().equals(blogin)) {
+            frame.dispose();
+            new Login();
+        }
+
+        if (e.getSource().equals(bregister)) {
+            frame.dispose();
+            new Register();
+        }
     }
 }
