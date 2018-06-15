@@ -3,20 +3,22 @@ package org.ticket.model;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "TB_TICKET")
 @Table(name="TB_TICKET")
 public class Ticket {
 
     @Id
     @GeneratedValue
-    @Column(name="TICKET_ID")
+    @Column(name="TICKET_ID", nullable = false)
     private long id;
-    @Column(name="TICKET_TITLE")
+
+    @Column(name="TICKET_TITLE", nullable = false)
     private String title;
-    @Column(name="TICKET_CONTENT")
+    @Column(name="TICKET_CONTENT", nullable = false)
     private String content;
 
     @OneToOne
+    @JoinColumn(name = "TICKET_ISSUERID", nullable = false)
     private User issuer;
 
     enum TicketPriority {
