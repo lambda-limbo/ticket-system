@@ -28,6 +28,15 @@ public class Ticket {
     @Column(name="TICKET_PRIORITY")
     private TicketPriority ticketPriority;
 
+    protected Ticket() {}
+
+    public Ticket(String title, String content, TicketPriority ticketPriority, User issuer) {
+        this.title = title;
+        this.content = content;
+        this.ticketPriority  = ticketPriority;
+        this.issuer = issuer;
+    }
+
     public long getTicketId() {
         return id;
     }
@@ -46,12 +55,5 @@ public class Ticket {
 
     public TicketPriority getTicketPriority() {
         return ticketPriority;
-    }
-
-    Ticket(String title, String content, TicketPriority ticketPriority, User issuer) {
-        this.title = title;
-        this.content = content;
-        this.ticketPriority  = ticketPriority;
-        this.issuer = issuer;
     }
 }

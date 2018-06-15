@@ -30,6 +30,8 @@ public class User {
     @Column(name="USER_TYPE")
     private UserType userType;
 
+    protected User() {}
+
     public User(String name, String nick, String password) {
         this.name = name;
         this.nick = nick;
