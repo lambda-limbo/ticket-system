@@ -15,6 +15,7 @@ public class GenericDAO<T> implements iGenericDAO<T> {
         manager.getTransaction().begin();
         manager.persist(object);
         manager.getTransaction().commit();
+        System.out.println(object.getClass().getSimpleName() + " saved successfully");
     }
 
     @Override
