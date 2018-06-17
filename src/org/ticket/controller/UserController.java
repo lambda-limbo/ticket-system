@@ -14,7 +14,7 @@ public class UserController {
 
     public void save(User u) {
         // Check if there's a User with the same nickname.
-        if(userDAO.search(User.class, "nick", u.getNick()) == null) {
+        if(searchNickname(u.getNick()) == null) {
             userDAO.save(u);
         }
     }
