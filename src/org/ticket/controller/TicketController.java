@@ -6,7 +6,7 @@ import org.ticket.model.dao.GenericDAO;
 import java.util.List;
 
 public class TicketController {
-    GenericDAO<Ticket> ticketDAO;
+    private GenericDAO<Ticket> ticketDAO;
 
     public TicketController() {
         ticketDAO = new GenericDAO<>();
