@@ -6,7 +6,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
-public class GenericDAO<T> implements iGenericDAO<T> {
+public class GenericDAO<T> implements IGenericDAO<T> {
 
     EntityManager manager = JPAConn.instance();
 
