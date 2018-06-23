@@ -1,86 +1,50 @@
 package org.ticket.model.dao;
 
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.Query;
+import javax.persistence.*;
 
 public class GenericDAO<T> implements IGenericDAO<T> {
 
     EntityManager manager = JPAConn.instance();
 
     @Override
-    public void save(T object) {
+    public void save(T object) throws PersistenceException {
         manager.getTransaction().begin();
         manager.persist(object);
         manager.getTransaction().commit();
-        System.out.println(object.getClass().getSimpleName() + " saved successfully");
     }
 
     @Override
-    public T search(Class objClass, String fieldName, String argument) {
+    public T search(Class objClass, String fieldName, String argument) throws PersistenceException {
         String query_message = "SELECT t FROM " + objClass.getTypeName() + " t WHERE " + fieldName + " = \'" + argument + "\'";
         Query query = manager.createQuery(query_message);
         Object object;
-        try {
-            object = query.getSingleResult();
-        }
-        catch (NoResultException no) {
-            System.out.println("No results found.");
-            object = null;
-        }
-        catch (NonUniqueResultException no) {
-            System.out.println("More than one result found.");
-            object = null;
-        }
+        object = query.getSingleResult();
         return (T) object;
     }
 
     @Override
-    public T search(Class objClass, String fieldName, int argument) {
+    public T search(Class objClass, String fieldName, int argument) throws PersistenceException  {
         String query_message = "SELECT t FROM " + objClass.getTypeName() + " t WHERE " + fieldName + " = " + argument;
         Query query = manager.createQuery(query_message);
         Object object;
-        try {
-            object = query.getSingleResult();
-        }
-        catch (NoResultException no) {
-            System.out.println("No results found.");
-            object = null;
-        }
-        catch (NonUniqueResultException no) {
-            System.out.println("More than one result found.");
-            object = null;
-        }
+        object = query.getSingleResult();
         return (T) object;
     }
 
     @Override
-    public List<T> search(Class objClass) {
+    public List<T> search(Class objClass) throws PersistenceException  {
         String query_message = "SELECT t FROM " + objClass.getTypeName() + " t";
         Query query = manager.createQuery(query_message);
         List<T> objectList;
-        try {
-            objectList = query.getResultList();
-        }
-        catch (NoResultException no) {
-            System.out.println("No results found.");
-            objectList = null;
-        }
+        objectList = query.getResultList();
         return objectList;
     }
 
     @Override
-    public void delete(T object) {
-        try {
-            manager.getTransaction().begin();
-            manager.remove(object);
-            manager.getTransaction().commit();
-            System.out.println(object.getClass().getSimpleName() + " deleted successfully.");
-        }
-        catch (IllegalArgumentException iae) {
-            System.out.println(object.getClass().getSimpleName() + " already removed.");
-        }
+    public void delete(T object) throws PersistenceException {
+        manager.getTransaction().begin();
+        manager.remove(object);
+        manager.getTransaction().commit();
     }
 }
