@@ -1,12 +1,16 @@
 package org.ticket.controller;
 
+import org.ticket.model.Ticket;
 import org.ticket.model.User;
 import org.ticket.model.dao.GenericDAO;
 
 import javax.persistence.NoResultException;
+import java.util.NoSuchElementException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 public class UserController {
     private GenericDAO<User> userDAO;
@@ -16,33 +20,78 @@ public class UserController {
     }
 
     public void save(User u) throws PersistenceException  {
-        // Check if there's a User with the same nickname.
+        // Prevents storing the same object twice.
         try {
-            this.searchNickname(u.getNick());
+            this.searchNickname(u.getNick()).get();
         }
-        catch (NoResultException ex) {
+        catch (NoSuchElementException ex) {
             userDAO.save(u);
         }
     }
 
     public void delete(User u) throws PersistenceException  {
-        userDAO.delete(u);
+        try {
+            userDAO.delete(u);
+        }
+        catch (IllegalArgumentException ex) {
+            throw ex;
+        }
     }
 
-    public User search(int id) throws PersistenceException {
-        return userDAO.search(User.class, "id", id);
+    public Optional<User> search(int id) throws PersistenceException {
+        Optional<User> user = Optional.empty();
+
+        try {
+            user = Optional.ofNullable(userDAO.search(User.class, "id", id));
+        }
+        catch (NoResultException | NonUniqueResultException ex) {
+            throw ex;
+        }
+        finally {
+            return user;
+        }
     }
 
-    public User searchName(String name) throws PersistenceException {
-        return userDAO.search(User.class, "name", name);
+    public Optional<User> searchName(String name) throws PersistenceException {
+        Optional<User> user = Optional.empty();
+
+        try {
+            user = Optional.ofNullable(userDAO.search(User.class, "name", name));
+        }
+        catch (NoResultException | NonUniqueResultException ex) {
+            throw ex;
+        }
+        finally {
+            return user;
+        }
     }
 
-    public User searchNickname(String nickname) throws PersistenceException  {
-        return userDAO.search(User.class, "nick", nickname);
+    public Optional<User> searchNickname(String nickname) throws PersistenceException  {
+        Optional<User> user = Optional.empty();
+
+        try {
+            user = Optional.ofNullable(userDAO.search(User.class, "nick", nickname));
+        }
+        catch (NoResultException | NonUniqueResultException ex) {
+            throw ex;
+        }
+        finally {
+            return user;
+        }
     }
 
-    public List<User> list() throws PersistenceException  {
-        return userDAO.search(User.class);
+    public Optional<List<User>> list() throws PersistenceException  {
+        Optional<List<User>> users = Optional.empty();
+
+        try {
+            users = Optional.ofNullable(userDAO.search(User.class));
+        }
+        catch (NoResultException | NonUniqueResultException ex) {
+            throw ex;
+        }
+        finally {
+            return users;
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package org.ticket.model.dao;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 public interface IGenericDAO<T> {
     void save(T object);
