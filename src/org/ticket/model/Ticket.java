@@ -21,7 +21,7 @@ public class Ticket {
     @JoinColumn(name = "TICKET_ISSUERID", nullable = false)
     private User issuer;
 
-    enum TicketPriority {
+    public enum TicketPriority {
         LOW,
         MEDIUM,
         HIGH
