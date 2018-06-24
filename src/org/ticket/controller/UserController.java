@@ -4,6 +4,7 @@ import org.ticket.model.User;
 import org.ticket.model.dao.GenericDAO;
 
 import java.util.NoSuchElementException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +17,13 @@ public class UserController {
         userDAO = new GenericDAO<>();
     }
 
-    public void save(User u) throws PersistenceException  {
+    public void save(User u) throws PersistenceException {
         // Prevents storing the same object twice.
-        try {
-            search("nick", u.getNick()).isPresent();
+        if (search("nick", u.getNick()).isPresent()) {
+            return;
         }
-        catch (NoSuchElementException ex) {
-            userDAO.save(u);
-        }
+
+        userDAO.save(u);
     }
 
     public void delete(User u) throws PersistenceException  {
