@@ -7,16 +7,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Greetings implements ActionListener {
+public class Greetings implements ActionListener, Runnable {
 
     private JFrame frame;
     private JPanel panel;
 
-    private JLabel lapp = new JLabel("Ticket System");
+    private JLabel llogin = new JLabel("Login");
     private JLabel lversion = new JLabel("Versão: " + Properties.version());
+    private JLabel lmessage = new JLabel("Fazendo login...");
 
-    private JButton bregister = new JButton("Registrar");
-    private JButton blogin = new JButton("Fazer login");
+    private JButton blogin = new JButton("Login");
+    private JButton bexit = new JButton("Sair");
+
+    private JLabel lnickname = new JLabel("Usuário");
+    private JLabel lpassword = new JLabel("Senha");
+
+    private JTextField tfnickname = new JTextField();
+    private JPasswordField tfpassword = new JPasswordField();
 
     public Greetings() {
         frame = new JFrame();
@@ -24,26 +31,42 @@ public class Greetings implements ActionListener {
 
         frame.setTitle("Bem vindo ao Ticket System");
         frame.setResizable(false);
-        frame.setSize(600, 400);
+        frame.setSize(340, 400);
         // I will manually set the position of the elements
         panel.setLayout(null);
 
-        lapp.setBounds(195, 30, 250, 40);
-        lapp.setFont(new Font("Arial", Font.ITALIC | Font.BOLD, 35));
-        panel.add(lapp);
+        llogin.setBounds(30, 35, 250, 40);
+        llogin.setFont(Fonts.big);
+        panel.add(llogin);
 
-        lversion.setBounds(530, 340, 150, 30);
-        lversion.setFont(new Font("Arial", Font.ITALIC, 11));
+        lversion.setBounds(210, 330, 150, 30);
+        lversion.setFont(Fonts.small);
         panel.add(lversion);
 
-        blogin.setBounds(170, 200, 100, 30);
+        lnickname.setBounds(30, 100, 100, 30);
+        panel.add(lnickname);
+
+        lpassword.setBounds(30, 150, 100, 30);
+        panel.add(lpassword);
+
+        tfnickname.setBounds(80, 100, 220, 35);
+        panel.add(tfnickname);
+
+        tfpassword.setBounds(80, 150, 220, 35);
+        panel.add(tfpassword);
+
+        blogin.setBounds(220, 200, 80, 30);
         panel.add(blogin);
 
-        bregister.setBounds(320, 200, 100, 30);
-        panel.add(bregister);
+        bexit.setBounds(130, 200, 80, 30);
+        panel.add(bexit);
+
+        lmessage.setBounds(290, 260, 220, 30);
+        lmessage.setVisible(false);
+        panel.add(lmessage);
 
         blogin.addActionListener(this);
-        bregister.addActionListener(this);
+        bexit.addActionListener(this);
 
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
@@ -53,13 +76,17 @@ public class Greetings implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(blogin)) {
-            frame.dispose();
-            new Login();
-        }
+            blogin.setEnabled(false);
+            tfnickname.setEnabled(false);
+            tfpassword.setEnabled(false);
 
-        if (e.getSource().equals(bregister)) {
+            llogin.setVisible(true);
+            // TODO: Call LoginController to login the user
+        } else if (e.getSource().equals(bexit)) {
             frame.dispose();
-            new Register();
         }
+    }
+
+    public void run() {
     }
 }

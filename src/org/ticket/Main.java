@@ -26,7 +26,7 @@ public class Main {
             ex.printStackTrace();
         }
 
-        // Open the main window
-        new Greetings();
+        // Open the main window and assure everything is set before showing the GUI.
+        SwingUtilities.invokeLater(new Greetings());
     }
 }
