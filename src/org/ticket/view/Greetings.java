@@ -98,6 +98,7 @@ public class Greetings implements ActionListener, KeyListener, Runnable {
             if (resp.second) {
                 // It is for sure found even calling it without the isPresent() because it was already authenticated.
                 new MainWindow(user.search("nick", tfnickname.getText()).get());
+                frame.dispose();
             } else {
                 JOptionPane.showMessageDialog(null, resp.first, "Erro de Autenticação",
                         JOptionPane.ERROR_MESSAGE);

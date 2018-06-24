@@ -1,5 +1,8 @@
 package org.ticket.view;
 
+import org.ticket.controller.UserController;
+import org.ticket.model.User;
+import org.ticket.model.User.UserType;
 import org.ticket.model.utils.Properties;
 
 import javax.swing.*;
@@ -12,7 +15,6 @@ public class Register implements ActionListener {
     private JPanel panel;
 
     private JLabel lapp = new JLabel("Cadastro");
-    private JLabel lversion = new JLabel("Versão: " + Properties.version());
 
     private JLabel lname = new JLabel("Nome");
     private JLabel lnickname = new JLabel("Usuário");
@@ -25,48 +27,48 @@ public class Register implements ActionListener {
 
     private JComboBox cbtype;
 
-    private JButton bback = new JButton("Voltar ao menu");
+    private JButton bback = new JButton("Voltar");
     private JButton bregister = new JButton("Cadastrar");
 
     public Register() {
         frame = new JFrame();
         panel = new JPanel();
 
-        frame.setTitle("Cadastro ao sistema");
+        frame.setTitle("Cadastro - TicketSystem");
         frame.setResizable(false);
-        frame.setSize(600, 400);
+        frame.setSize(350, 400);
         // I will manually set the position of the elements
         panel.setLayout(null);
 
-        lapp.setBounds(50, 50, 150, 30);
-        lapp.setFont(new Font("Arial", Font.ITALIC, 22));
+        lapp.setBounds(30, 35, 150, 30);
+        lapp.setFont(Fonts.big);
         panel.add(lapp);
 
-        lname.setBounds(50, 100, 150, 30);
+        lname.setBounds(30, 100, 150, 30);
         panel.add(lname);
 
-        lnickname.setBounds(50, 150, 150, 30);
+        lnickname.setBounds(30, 150, 150, 30);
         panel.add(lnickname);
 
-        lpassword.setBounds(50, 200, 150, 30);
+        lpassword.setBounds(30, 200, 150, 30);
         panel.add(lpassword);
 
-        lusertype.setBounds(50, 250, 150, 30);
+        lusertype.setBounds(30, 250, 150, 30);
         panel.add(lusertype);
 
-        tfname.setBounds(200, 100, 200, 30);
+        tfname.setBounds(100, 100, 200, 30);
         panel.add(tfname);
 
-        tfnickname.setBounds(200, 150, 200, 30);
+        tfnickname.setBounds(100, 150, 200, 30);
         panel.add(tfnickname);
 
-        tfpassword.setBounds(200, 200, 200, 30);
+        tfpassword.setBounds(100, 200, 200, 30);
         panel.add(tfpassword);
 
         String types[] = {"Usuário", "Gerente"};
         cbtype = new JComboBox(types);
 
-        cbtype.setBounds(200, 250, 150, 30);
+        cbtype.setBounds(150, 250, 150, 30);
         panel.add(cbtype);
 
         bback.setBounds(100, 300, 100, 30);
@@ -74,10 +76,6 @@ public class Register implements ActionListener {
 
         bregister.setBounds(200, 300, 100, 30);
         panel.add(bregister);
-
-        lversion.setBounds(530, 340, 150, 30);
-        lversion.setFont(new Font("Arial", Font.ITALIC, 11));
-        panel.add(lversion);
 
         bback.addActionListener(this);
         bregister.addActionListener(this);
@@ -97,7 +95,24 @@ public class Register implements ActionListener {
         }
 
         if (source.equals(bregister)) {
-            // TODO: Call RegisterController to save the user
+            UserType ut = UserType.client;
+
+            switch (cbtype.getSelectedIndex()) {
+                case 0:
+                    ut = UserType.client;
+                    break;
+                case 1:
+                    ut = UserType.manager;
+                    break;
+            }
+
+            UserController uc = new UserController();
+
+            // FIXME: This is harmful, don't do String.valueOf(tfpassword.getPassword())) because you are removing
+            // FIXME: the purpose of security over here. We have probably to change the codebase of the user.
+            User user = new User(tfname.getText(), tfnickname.getText(), String.valueOf(tfpassword.getPassword()), ut);
+
+            uc.save(user);
         }
     }
 }
