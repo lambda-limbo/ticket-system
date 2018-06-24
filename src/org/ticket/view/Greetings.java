@@ -1,13 +1,17 @@
 package org.ticket.view;
 
+import org.ticket.controller.LoginController;
+import org.ticket.controller.UserController;
 import org.ticket.model.utils.Properties;
+import org.ticket.model.utils.Tuple;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Greetings implements ActionListener, Runnable {
+public class Greetings implements ActionListener, KeyListener, Runnable {
 
     private JFrame frame;
     private JPanel panel;
@@ -24,6 +28,11 @@ public class Greetings implements ActionListener, Runnable {
 
     private JTextField tfnickname = new JTextField();
     private JPasswordField tfpassword = new JPasswordField();
+
+    // To control access inside the application
+    UserController user = new UserController();
+
+    public void run() {}
 
     public Greetings() {
         frame = new JFrame();
@@ -61,9 +70,12 @@ public class Greetings implements ActionListener, Runnable {
         bexit.setBounds(130, 200, 80, 30);
         panel.add(bexit);
 
-        lmessage.setBounds(290, 260, 220, 30);
+        lmessage.setBounds(210, 260, 220, 30);
         lmessage.setVisible(false);
         panel.add(lmessage);
+
+        tfnickname.addKeyListener(this);
+        tfpassword.addKeyListener(this);
 
         blogin.addActionListener(this);
         bexit.addActionListener(this);
@@ -74,19 +86,60 @@ public class Greetings implements ActionListener, Runnable {
         frame.setVisible(true);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(blogin)) {
-            blogin.setEnabled(false);
-            tfnickname.setEnabled(false);
-            tfpassword.setEnabled(false);
+            disable();
 
-            llogin.setVisible(true);
-            // TODO: Call LoginController to login the user
+            lmessage.setVisible(true);
+
+            Tuple<String, Boolean> resp = LoginController.authenticate(tfnickname.getText(), tfpassword.getPassword());
+
+            if (resp.second) {
+                // It is for sure found even calling it without the isPresent() because it was already authenticated.
+                new MainWindow(user.search("nick", tfnickname.getText()).get());
+            } else {
+                JOptionPane.showMessageDialog(null, resp.first, "Erro de Autenticação",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+            enable();
+            tfnickname.selectAll();
+            lmessage.setVisible(false);
+
         } else if (e.getSource().equals(bexit)) {
             frame.dispose();
+            // Exits soon after the dispose of the frame resources.
+            System.exit(0);
         }
     }
 
-    public void run() {
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getSource().equals(tfnickname) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            tfpassword.requestFocus();
+        }
+
+        if (e.getSource().equals(tfpassword) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            blogin.dispatchEvent(e);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
+
+    private void disable() {
+        blogin.setEnabled(false);
+        tfnickname.setEnabled(false);
+        tfpassword.setEnabled(false);
+    }
+
+    private void enable() {
+        blogin.setEnabled(true);
+        tfnickname.setEnabled(true);
+        tfpassword.setEnabled(true);
     }
 }

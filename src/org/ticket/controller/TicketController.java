@@ -20,7 +20,7 @@ public class TicketController {
     public void save(Ticket t) throws PersistenceException {
         // Prevents storing the same object twice.
         try {
-            this.search(t.getTitle()).get();
+            search(t.getTitle()).isPresent();
         }
         catch (NoSuchElementException ex) {
             ticketDAO.save(t);
@@ -28,54 +28,24 @@ public class TicketController {
     }
 
     public void delete(Ticket t) throws PersistenceException  {
-        try {
-            ticketDAO.delete(t);
-        }
-        // t not found
-        catch (IllegalArgumentException ex) {
-            throw ex;
-        }
+        ticketDAO.delete(t);
     }
 
     public Optional<Ticket> search(int id) throws PersistenceException {
-        Optional<Ticket> ticket = Optional.empty();
+        Optional<Ticket> ticket = Optional.ofNullable(ticketDAO.search(Ticket.class, "id", id));
 
-        try {
-            ticket = Optional.ofNullable(ticketDAO.search(Ticket.class, "id", id));
-        }
-        catch (NoResultException | NonUniqueResultException ex) {
-            throw ex;
-        }
-        finally {
-            return ticket;
-        }
+        return ticket;
     }
 
     public Optional<Ticket> search(String title) throws PersistenceException  {
-        Optional<Ticket> ticket = Optional.empty();
+        Optional<Ticket> ticket =  Optional.ofNullable(ticketDAO.search(Ticket.class, "title", title));
 
-        try {
-            ticket = Optional.ofNullable(ticketDAO.search(Ticket.class, "title", title));
-        }
-        catch (NoResultException | NonUniqueResultException ex) {
-            throw ex;
-        }
-        finally {
-            return ticket;
-        }
+        return ticket;
     }
 
     public Optional<List<Ticket>> list() throws PersistenceException  {
-        Optional<List<Ticket>> tickets = Optional.empty();
+        Optional<List<Ticket>> tickets = Optional.ofNullable(ticketDAO.search(Ticket.class));
 
-        try {
-            tickets = Optional.ofNullable(ticketDAO.search(Ticket.class));
-        }
-        catch (NoResultException ex) {
-            throw ex;
-        }
-        finally {
-            return tickets;
-        }
+        return tickets;
     }
 }
