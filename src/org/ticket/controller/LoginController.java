@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import org.ticket.model.User;
+import org.ticket.model.utils.Session;
 import org.ticket.model.utils.Tuple;
 
 import javax.persistence.PersistenceException;
@@ -38,11 +39,14 @@ public class LoginController {
                 .toString();
 
 
-        // User authenticated
+        // User not authenticated
         if (!u.get().getPassword().equals(pass)) {
             response = new Tuple<>("Senha incorreta", false);
             return response;
         }
+
+        // Fill the session with the logged user
+        Session.user = u.get();
 
         response = new Tuple<>("Usuário autenticado", true);
         return response;
