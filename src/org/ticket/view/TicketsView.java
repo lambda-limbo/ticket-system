@@ -62,7 +62,7 @@ public class TicketsView implements ActionListener {
 
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
 
@@ -73,8 +73,8 @@ public class TicketsView implements ActionListener {
 
         if (e.getSource().equals(bopen)) {
             // TODO: Get the ticket ID from the selected row
-            new OpenTicket(new Ticket("Exemplo chamado", "Muito conteudo", Ticket.TicketPriority.HIGH,
-                    new User("Rafael Campos Nunes", "rafaelcn", "asdasd")));
+            new OpenTicket(new Ticket("Exemplo chamado", "Muito conteudo", false,
+                    Ticket.TicketPriority.HIGH, new User("Rafael Campos Nunes", "rafaelcn", "asdasd")));
         }
 
         if (e.getSource().equals(bsolve)) {

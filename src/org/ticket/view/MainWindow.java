@@ -2,6 +2,7 @@ package org.ticket.view;
 
 import org.ticket.model.User;
 import org.ticket.model.utils.Properties;
+import org.ticket.model.utils.Session;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -35,7 +36,7 @@ public class MainWindow implements ActionListener {
     private JLabel lversion = new JLabel("Versão: " + Properties.version());
 
 
-    public MainWindow(User u) {
+    public MainWindow() {
         frame = new JFrame();
         panel = new JPanel();
 
@@ -69,7 +70,7 @@ public class MainWindow implements ActionListener {
         panel.add(linformation);
 
         luser.setBounds(300, 340, 300, 30);
-        luser.setText(luser.getText() + u.getName());
+        luser.setText(luser.getText() + Session.user.getName());
         panel.add(luser);
 
         lversion.setBounds(300, 360, 150, 30);
@@ -79,7 +80,7 @@ public class MainWindow implements ActionListener {
         bcontrolUsers.addActionListener(this);
         blogout.addActionListener(this);
 
-        if (u.getUserType() == User.UserType.client) {
+        if (Session.user.getUserType() == User.UserType.client) {
             bcontrolUsers.setEnabled(false);
         }
 
