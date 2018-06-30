@@ -16,6 +16,8 @@ public class Ticket {
     private String title;
     @Column(name="TICKET_CONTENT", nullable = false)
     private String content;
+    @Column(name="TICKET_SOLVED", nullable = false)
+    private boolean solved;
 
     @OneToOne
     @JoinColumn(name = "TICKET_ISSUERID", nullable = false)
@@ -32,9 +34,10 @@ public class Ticket {
 
     protected Ticket() {}
 
-    public Ticket(String title, String content, TicketPriority ticketPriority, User issuer) {
+    public Ticket(String title, String content, boolean solved, TicketPriority ticketPriority, User issuer) {
         this.title = title;
         this.content = content;
+        this.solved = solved;
         this.ticketPriority  = ticketPriority;
         this.issuer = issuer;
     }
@@ -49,6 +52,10 @@ public class Ticket {
 
     public String getContent() {
         return content;
+    }
+
+    public boolean getSolved() {
+        return solved;
     }
 
     public User getIssuer() {
