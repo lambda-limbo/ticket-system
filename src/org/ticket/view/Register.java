@@ -84,7 +84,7 @@ public class Register implements ActionListener {
 
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
 
