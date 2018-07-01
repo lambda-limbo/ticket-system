@@ -4,7 +4,9 @@ import org.ticket.controller.UserController;
 import org.ticket.model.User;
 import org.ticket.model.User.UserType;
 import org.ticket.model.utils.Properties;
+import org.ticket.model.utils.Tuple;
 
+import javax.persistence.PersistenceException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -91,10 +93,11 @@ public class Register implements ActionListener {
 
         if (source.equals(bback)) {
             frame.dispose();
-            new Greetings();
         }
 
         if (source.equals(bregister)) {
+            disable();
+
             UserType ut = UserType.client;
 
             switch (cbtype.getSelectedIndex()) {
@@ -112,7 +115,33 @@ public class Register implements ActionListener {
             // FIXME: the purpose of security over here. We have probably to change the codebase of the user.
             User user = new User(tfname.getText(), tfnickname.getText(), String.valueOf(tfpassword.getPassword()), ut);
 
-            uc.save(user);
+            Tuple<String, Boolean> resp = uc.save(user);
+
+            if (!resp.second) {
+                JOptionPane.showMessageDialog(null, resp.first, "Erro de cadastro",
+                        JOptionPane.ERROR_MESSAGE);
+                tfnickname.grabFocus();
+                tfnickname.selectAll();
+            } else {
+                JOptionPane.showMessageDialog(null, resp.first, "Sucesso de cadastro",
+                        JOptionPane.INFORMATION_MESSAGE);
+                tfname.setText("");
+                tfnickname.setText("");
+                tfpassword.setText("");
+                cbtype.setSelectedIndex(0);
+            }
+
+            enable();
         }
+    }
+
+    private void disable() {
+        bregister.setEnabled(false);
+        bback.setEnabled(false);
+    }
+
+    private void enable() {
+        bregister.setEnabled(true);
+        bback.setEnabled(true);
     }
 }
