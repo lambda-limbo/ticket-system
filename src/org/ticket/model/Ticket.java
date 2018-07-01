@@ -23,13 +23,16 @@ public class Ticket {
     @JoinColumn(name = "TICKET_ISSUERID", nullable = false)
     private User issuer;
 
+    @Column(name="TICKET_PRIORITY", nullable = false)
+    private int priority;
+
     public enum TicketPriority {
         LOW,
         MEDIUM,
         HIGH
     }
 
-    @Column(name="TICKET_PRIORITY")
+    @Transient
     private TicketPriority ticketPriority;
 
     protected Ticket() {}
@@ -39,6 +42,7 @@ public class Ticket {
         this.content = content;
         this.solved = solved;
         this.ticketPriority  = ticketPriority;
+        this.priority = ticketPriority.ordinal();
         this.issuer = issuer;
     }
 
@@ -62,7 +66,7 @@ public class Ticket {
         return issuer;
     }
 
-    public TicketPriority getTicketPriority() {
-        return ticketPriority;
+    public int getTicketPriority() {
+        return priority;
     }
 }
