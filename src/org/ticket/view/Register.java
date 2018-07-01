@@ -3,12 +3,9 @@ package org.ticket.view;
 import org.ticket.controller.UserController;
 import org.ticket.model.User;
 import org.ticket.model.User.UserType;
-import org.ticket.model.utils.Properties;
 import org.ticket.model.utils.Tuple;
 
-import javax.persistence.PersistenceException;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
