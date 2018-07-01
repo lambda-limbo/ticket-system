@@ -3,46 +3,37 @@ package org.ticket.view;
 import org.ticket.model.Ticket;
 
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import java.util.Vector;
 
-public class TicketSystemTableModel implements TableModel {
+public class TicketSystemTableModel extends AbstractTableModel {
 
-    private String columns[] = {"Identificador", "Título", "Prioridade", "Resolvido"};
-    private Ticket data[][];
+    private final String columns[] = {"Identificador", "Título", "Prioridade", "Autor", "Resolvido"};
+    private Vector<Object[]> data;
+
+    public void push(Object data[]) {
+        this.data.add(data);
+    }
 
     public int getRowCount() {
-        return 0;
+        return data.size();
     }
 
     public int getColumnCount() {
-        return 0;
+        return columns.length;
     }
 
-    public String getColumnName(int columnIndex) {
-        return null;
+    public String getColumnName(int i) {
+        return columns[i];
     }
 
-    public Class<?> getColumnClass(int columnIndex) {
-        return null;
-    }
-
+    @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
 
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        return null;
-    }
-
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
-    }
-
-    public void addTableModelListener(TableModelListener l) {
-
-    }
-
-    public void removeTableModelListener(TableModelListener l) {
-
+    public Object getValueAt(int row, int column) {
+        return data.get(row)[column];
     }
 }
