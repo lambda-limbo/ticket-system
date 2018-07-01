@@ -2,6 +2,7 @@ package org.ticket.controller;
 
 import org.ticket.model.User;
 import org.ticket.model.dao.GenericDAO;
+import org.ticket.model.utils.Tuple;
 
 import java.util.NoSuchElementException;
 import javax.persistence.NoResultException;
@@ -17,13 +18,19 @@ public class UserController {
         userDAO = new GenericDAO<>();
     }
 
-    public void save(User u) throws PersistenceException {
+    public Tuple<String, Boolean> save(User u) {
+        Tuple<String, Boolean> resp = new Tuple<>("Usuário Cadastrado!", true);
+
         // Prevents storing the same object twice.
-        if (search("nick", u.getNick()).isPresent()) {
-            return;
+        try {
+            search("nick", u.getNick());
+
+            resp  = new Tuple<>("Nome de usuário ja utilizado, escolha outro por favor.", false);
+        } catch (PersistenceException ex) {
+            userDAO.save(u);
         }
 
-        userDAO.save(u);
+        return resp;
     }
 
     public void delete(User u) throws PersistenceException  {
