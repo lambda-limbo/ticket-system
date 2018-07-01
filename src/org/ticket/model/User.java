@@ -23,9 +23,9 @@ public class User {
     private String password;
 
     public enum UserType {
+        client ,
         manager,
-        client
-    };
+    }
 
     @Column(name="USER_TYPE")
     private UserType userType;
