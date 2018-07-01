@@ -35,8 +35,9 @@ public class GenericDAO<T> implements IGenericDAO<T> {
     public List<T> search(Class objClass) throws PersistenceException  {
         String query_message = "SELECT t FROM " + objClass.getTypeName() + " t";
         Query query = manager.createQuery(query_message);
-        List<T> tickets = query.getResultList();
-        return tickets;
+        // This may return a list of tickets or users
+        List<T> objects = query.getResultList();
+        return objects;
     }
 
     @Override
