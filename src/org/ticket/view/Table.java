@@ -1,6 +1,5 @@
 package org.ticket.view;
 
-import jdk.nashorn.internal.scripts.JO;
 import org.ticket.controller.TicketController;
 import org.ticket.model.Ticket;
 
