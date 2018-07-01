@@ -2,6 +2,7 @@ package org.ticket.view;
 
 import org.ticket.model.Ticket;
 import org.ticket.model.User;
+import org.ticket.model.utils.Session;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +13,10 @@ public class TicketsView implements ActionListener {
     private JFrame frame;
     private JPanel panel;
 
-    private JTable ttickets = new JTable(new TicketSystemTableModel());
+    TicketSystemTableModel ttm = new TicketSystemTableModel();
+
+    private JTable ttickets;
+    private JScrollPane sptable = new JScrollPane(ttickets);
 
     private JLabel lsearch = new JLabel("Buscar por identificador");
 
@@ -26,6 +30,11 @@ public class TicketsView implements ActionListener {
     public TicketsView() {
         frame = new JFrame();
         panel = new JPanel();
+
+        // Fill the table with some tickets
+        Table.fill(ttm);
+
+        ttickets = new JTable(ttm);
 
         frame.setTitle("Chamados - Ticket System");
         frame.setResizable(false);
@@ -42,8 +51,10 @@ public class TicketsView implements ActionListener {
         bsearch.setBounds(590, 45, 90, 30);
         panel.add(bsearch);
 
-        ttickets.setBounds(30, 100, 650, 320);
-        panel.add(ttickets);
+        sptable.setBounds(30, 100, 650, 320);
+        panel.add(sptable);
+
+        ttickets.setFillsViewportHeight(true);
 
         bcreate.setBounds(30, 430, 100, 30);
         panel.add(bcreate);
@@ -51,7 +62,6 @@ public class TicketsView implements ActionListener {
         bopen.setBounds(450, 430, 100, 30);
         panel.add(bopen);
 
-        // TODO: Limit who can close the issue (the own issuer and a manager)
         bsolve.setBounds(560, 430, 120, 30);
         panel.add(bsolve);
 
@@ -59,6 +69,10 @@ public class TicketsView implements ActionListener {
         bcreate.addActionListener(this);
         bopen.addActionListener(this);
         bsolve.addActionListener(this);
+
+        if (Session.user.getUserType() == User.UserType.client) {
+            bsolve.setEnabled(false);
+        }
 
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
@@ -74,12 +88,12 @@ public class TicketsView implements ActionListener {
         if (e.getSource().equals(bopen)) {
             // TODO: Get the ticket ID from the selected row
             new OpenTicket(new Ticket("Exemplo chamado", "Muito conteudo", false,
-                    Ticket.TicketPriority.HIGH, new User("Rafael Campos Nunes", "rafaelcn", "asdasd")));
+                    Ticket.TicketPriority.HIGH, Session.user));
         }
 
         if (e.getSource().equals(bsolve)) {
             // TODO: Remove row from the tickets table.
-            // TODO: We should also create some kind of filter to filter information.
+            // TODO: We should also create some kind of filter to filter information (?).
         }
     }
 }
