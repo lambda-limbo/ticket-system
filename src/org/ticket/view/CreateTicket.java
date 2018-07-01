@@ -1,5 +1,10 @@
 package org.ticket.view;
 
+import org.ticket.controller.TicketController;
+import org.ticket.model.Ticket;
+import org.ticket.model.utils.Session;
+import org.ticket.model.utils.Tuple;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +20,13 @@ public class CreateTicket implements ActionListener {
 
     private JTextField tftitle = new JTextField();
 
-    private JComboBox<String> cbpriority = new JComboBox<>();
+    private JComboBox<String> cbpriority;
+
+    private JTextField tfproblem = new JTextField();
+
+    private JButton bcreate = new JButton("Criar Chamado");
+
+    String types[] = {"Baixa", "Média", "Alta"};
 
     public CreateTicket() {
         frame = new JFrame();
@@ -27,6 +38,32 @@ public class CreateTicket implements ActionListener {
         // I will manually set the position of the elements
         panel.setLayout(null);
 
+        ltitle.setBounds(30, 20, 40, 30);
+        panel.add(ltitle);
+
+        tftitle.setBounds(90, 20, 580, 30);
+        panel.add(tftitle);
+
+        lpriority.setBounds(480, 80, 80, 30);
+        panel.add(lpriority);
+
+        cbpriority = new JComboBox(types);
+
+        cbpriority.setBounds(550, 80, 120, 30);
+        cbpriority.setSelectedIndex(0);
+        panel.add(cbpriority);
+
+        ldescription.setBounds(30, 110, 640, 30);
+        panel.add(ldescription);
+
+        tfproblem.setBounds(30, 140, 640, 280);
+        panel.add(tfproblem);
+
+        bcreate.setBounds(550, 428, 120, 30);
+        panel.add(bcreate);
+
+        bcreate.addActionListener(this);
+
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -35,6 +72,49 @@ public class CreateTicket implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
 
+        if(source.equals(bcreate)) {
+            disable();
+
+            TicketController tc = new TicketController();
+
+            Ticket.TicketPriority tp = Ticket.TicketPriority.LOW;
+            String tps = cbpriority.getSelectedItem().toString();
+
+            if(tps.equals("Média")) {
+                tp = Ticket.TicketPriority.MEDIUM;
+            }
+            else if(tps.equals("Alta")) {
+                tp = Ticket.TicketPriority.HIGH;
+            }
+
+            Ticket t = new Ticket(tftitle.getText(), tfproblem.getText(), false, tp, Session.user);
+
+            Tuple<String, Boolean> resp = tc.save(t);
+
+            if(!resp.second) {
+                JOptionPane.showMessageDialog(null, resp.first, "Erro ao criar ticket",
+                        JOptionPane.ERROR_MESSAGE);
+                tftitle.grabFocus();
+                tftitle.selectAll();
+            } else {
+                JOptionPane.showMessageDialog(null, resp.first, "Sucesso ao criar ticket",
+                        JOptionPane.INFORMATION_MESSAGE);
+                tftitle.setText("");
+                cbpriority.setSelectedItem(0);
+                tfproblem.setText("");
+            }
+
+            enable();
+        }
+    }
+
+    private void disable() {
+        bcreate.setEnabled(false);
+    }
+
+    private void enable() {
+        bcreate.setEnabled(true);
     }
 }
