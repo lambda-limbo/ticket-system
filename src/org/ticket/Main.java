@@ -1,5 +1,7 @@
 package org.ticket;
 
+import org.ticket.controller.UserController;
+import org.ticket.model.User;
 import org.ticket.model.utils.Logger;
 import org.ticket.model.utils.Properties;
 import org.ticket.view.Greetings;
@@ -13,8 +15,14 @@ public class Main {
         if (args.length < 1) {
             Logger.set(Logger.LOG_LEVEL.NORMAL);
         } else {
-            if (args[1].equals("--debug")) {
+            if (args[0].equals("--debug")) {
                 Logger.set(Logger.LOG_LEVEL.DEBUG);
+
+                User u = new User("Administrador do sistema", "admin", "entrophy",
+                        User.UserType.manager);
+
+                UserController uc = new UserController();
+                uc.save(u);
             }
         }
 
