@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public final class TableController {
 
-    private static TicketController tc = new TicketController();
+    private static TicketController tc = TicketController.instance();
 
     private TableController() {}
 

@@ -1,20 +1,22 @@
 package org.ticket.view;
 
+import org.ticket.controller.TicketController;
+import org.ticket.model.Ticket;
 import org.ticket.model.User;
 import org.ticket.model.utils.Properties;
 import org.ticket.model.utils.Session;
 
+import javax.persistence.PersistenceException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Vector;
 
 public class MainWindow implements ActionListener {
 
     private JFrame frame;
     private JPanel panel;
-
-    private JMenuBar menuBar = new JMenuBar();
-    private JMenu menu = new JMenu();
 
     private JButton bvisualize = new JButton("Controle de chamados");
     private JButton bcontrolUsers = new JButton("Controle de usuários");
@@ -25,9 +27,7 @@ public class MainWindow implements ActionListener {
     // Labels related to recent tickets
     private JLabel lrecentTickets = new JLabel("Chamados Recentes");
 
-    private JLabel lticket1 = new JLabel();
-    private JLabel lticket2 = new JLabel();
-    private JLabel lticket3 = new JLabel();
+    private Vector<JLabel> ltickets = new Vector<>(4);
 
     // Labels related to information of the running machine and user
     private JLabel linformation = new JLabel("Informações");
@@ -57,6 +57,7 @@ public class MainWindow implements ActionListener {
         panel.add(blogout);
 
         bbar.setBounds(250, 0, 1, 500);
+        bbar.setEnabled(false);
         panel.add(bbar);
 
         lrecentTickets.setBounds(300, 50, 200, 30);
@@ -64,6 +65,42 @@ public class MainWindow implements ActionListener {
         panel.add(lrecentTickets);
 
         // TODO: Fill tickets information with actual tickets or none if there isn't any.
+        TicketController tc = TicketController.instance();
+
+        for (int i = 0;  i < ltickets.capacity(); i++) {
+            ltickets.add(i, new JLabel());
+        }
+
+        ltickets.get(0).setBounds(300, 100, 400, 30);
+        panel.add(ltickets.get(0));
+
+        ltickets.get(1).setBounds(300, 150, 400, 30);
+        panel.add(ltickets.get(1));
+
+        ltickets.get(2).setBounds(300, 200, 400, 30);
+        panel.add(ltickets.get(2));
+
+        ltickets.get(3).setBounds(300, 250, 400, 30);
+        panel.add(ltickets.get(3));
+
+        try {
+            List<Ticket> tickets = tc.list(4);
+
+            String text[] = new String[tickets.size()];
+
+            for (int i = 0; i < tickets.size(); i++) {
+                Ticket ticket = tickets.get(i);
+                text[i] = "#" + ticket.getTicketId() + " Título: " + ticket.getTitle() + " Criado por: " +
+                        ticket.getIssuer().getName() + "";
+                ltickets.get(i).setText(text[i]);
+            }
+
+            if (tickets.size() == 0) {
+                ltickets.get(0).setText("Não existem chamados registrados no sistema");
+            }
+        } catch (PersistenceException ex) {
+            ltickets.get(0).setText("Não existem chamados registrados no sistema");
+        }
 
         linformation.setBounds(300, 300, 150, 30);
         linformation.setFont(Fonts.medium);

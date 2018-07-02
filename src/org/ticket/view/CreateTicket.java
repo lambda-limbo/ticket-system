@@ -91,7 +91,7 @@ public class CreateTicket implements ActionListener {
                     break;
             }
 
-            TicketController tc = new TicketController();
+            TicketController tc = TicketController.instance();
 
             Ticket t = new Ticket(tftitle.getText(), tfproblem.getText(), false, tp, Session.user);
 
