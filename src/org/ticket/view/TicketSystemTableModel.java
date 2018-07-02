@@ -1,19 +1,21 @@
 package org.ticket.view;
 
-import org.ticket.model.Ticket;
-
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import java.util.Vector;
 
 public class TicketSystemTableModel extends AbstractTableModel {
 
     private final String columns[] = {"Identificador", "Título", "Prioridade", "Autor", "Resolvido"};
-    private Vector<Object[]> data;
+    private Vector<Object[]> data = new Vector<>();
 
     public void push(Object data[]) {
         this.data.add(data);
+        fireTableRowsInserted(this.data.size(), this.data.size()+1);
+    }
+
+    public void remove(int row) {
+        data.remove(row);
+        fireTableRowsDeleted(row, row);
     }
 
     public int getRowCount() {
@@ -24,6 +26,7 @@ public class TicketSystemTableModel extends AbstractTableModel {
         return columns.length;
     }
 
+    @Override
     public String getColumnName(int i) {
         return columns[i];
     }

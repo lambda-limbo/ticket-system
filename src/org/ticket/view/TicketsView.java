@@ -1,5 +1,6 @@
 package org.ticket.view;
 
+import org.ticket.controller.TableController;
 import org.ticket.model.Ticket;
 import org.ticket.model.User;
 import org.ticket.model.utils.Session;
@@ -13,7 +14,7 @@ public class TicketsView implements ActionListener {
     private JFrame frame;
     private JPanel panel;
 
-    TicketSystemTableModel ttm = new TicketSystemTableModel();
+    TicketSystemTableModel tst = new TicketSystemTableModel();
 
     private JTable ttickets;
     private JScrollPane sptable = new JScrollPane(ttickets);
@@ -31,10 +32,7 @@ public class TicketsView implements ActionListener {
         frame = new JFrame();
         panel = new JPanel();
 
-        // Fill the table with some tickets
-        Table.fill(ttm);
-
-        ttickets = new JTable(ttm);
+        ttickets = new JTable(tst);
 
         frame.setTitle("Chamados - Ticket System");
         frame.setResizable(false);
@@ -54,6 +52,8 @@ public class TicketsView implements ActionListener {
         sptable.setBounds(30, 100, 650, 320);
         panel.add(sptable);
 
+        sptable.getViewport().add(ttickets);
+
         ttickets.setFillsViewportHeight(true);
 
         bcreate.setBounds(30, 430, 100, 30);
@@ -72,6 +72,17 @@ public class TicketsView implements ActionListener {
 
         if (Session.user.getUserType() == User.UserType.client) {
             bsolve.setEnabled(false);
+        }
+
+        // Fill the table with some tickets
+        try {
+            TableController.fill(tst);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Um erro ocorreu, relate ao desenvolvedor a " +
+                            "seguinte ensagem: " + ex.getMessage() + ".",
+                    "Erro de sistema", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
         }
 
         frame.setLocationRelativeTo(null);
@@ -94,6 +105,26 @@ public class TicketsView implements ActionListener {
         if (e.getSource().equals(bsolve)) {
             // TODO: Remove row from the tickets table.
             // TODO: We should also create some kind of filter to filter information (?).
+            ttickets.getSelectedRow();
+
+        }
+
+        if (e.getSource().equals(bsearch)) {
+            try {
+                Integer n;
+
+                if (tfsearch.getText().length() == 0) {
+                    n = -1;
+                } else {
+                    n = new Integer(tfsearch.getText());
+                }
+
+                TableController.filter(tst, n);
+            } catch(NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Insira somente números",
+                        "Erro de conversão", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
         }
     }
 }
