@@ -77,17 +77,21 @@ public class CreateTicket implements ActionListener {
         if(source.equals(bcreate)) {
             disable();
 
-            TicketController tc = new TicketController();
-
             Ticket.TicketPriority tp = Ticket.TicketPriority.LOW;
-            String tps = cbpriority.getSelectedItem().toString();
 
-            if(tps.equals("Média")) {
-                tp = Ticket.TicketPriority.MEDIUM;
+            switch (cbpriority.getSelectedIndex()) {
+                case 0:
+                    tp = Ticket.TicketPriority.LOW;
+                    break;
+                case 1:
+                    tp = Ticket.TicketPriority.MEDIUM;
+                    break;
+                case 2:
+                    tp = Ticket.TicketPriority.HIGH;
+                    break;
             }
-            else if(tps.equals("Alta")) {
-                tp = Ticket.TicketPriority.HIGH;
-            }
+
+            TicketController tc = new TicketController();
 
             Ticket t = new Ticket(tftitle.getText(), tfproblem.getText(), false, tp, Session.user);
 
@@ -99,11 +103,9 @@ public class CreateTicket implements ActionListener {
                 tftitle.grabFocus();
                 tftitle.selectAll();
             } else {
+                frame.dispose();
                 JOptionPane.showMessageDialog(null, resp.first, "Sucesso ao criar ticket",
                         JOptionPane.INFORMATION_MESSAGE);
-                tftitle.setText("");
-                cbpriority.setSelectedItem(0);
-                tfproblem.setText("");
             }
 
             enable();
