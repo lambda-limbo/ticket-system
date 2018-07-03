@@ -1,11 +1,10 @@
 package org.ticket.controller;
 
 import org.ticket.model.Ticket;
+import org.ticket.model.utils.Tuple;
 import org.ticket.view.TicketSystemTableModel;
 
 import javax.persistence.PersistenceException;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,20 +22,26 @@ public final class TableController {
 
         Optional<List<Ticket>> tickets = tc.list();
 
-        for (Ticket ticket : tickets.get()) {
-            Object o[] = new Object[5];
+        clear(tst);
 
-            set(ticket, o);
-            tst.push(o);
+        if (tickets.isPresent()) {
+            for (Ticket ticket : tickets.get()) {
+                Object o[] = new Object[5];
+
+                set(ticket, o);
+                tst.push(o);
+            }
         }
     }
 
     /**
-     * @brief Filter the tickets to
+     * @brief Filter the tickets available in the database
      * @param tst
      * @param id
      */
-    public static void filter(TicketSystemTableModel tst, Integer id) {
+    public static Tuple<String, Boolean> filter(TicketSystemTableModel tst, Integer id) {
+
+        Tuple<String, Boolean> resp = new Tuple<>("", true);
 
         try {
             Ticket ticket = tc.search(id).get();
@@ -49,10 +54,30 @@ public final class TableController {
 
         } catch(PersistenceException ex) {
             // No ticket found remove Filter (This is the default operation)
-            clear(tst);
-            fill(tst);
+            resp.first = "Nenhum chamado encontrado com o código " + id + ".";
+            resp.second = false;
+            return resp;
         }
 
+        return resp;
+    }
+
+    public static Ticket getSelectedTicket(TicketSystemTableModel tst, int index) {
+
+        Optional<Ticket> ticket = null;
+        Object result[] = tst.getValue(index);
+
+        try {
+            String formattedId = (String)result[0];
+
+            int id = Integer.valueOf(formattedId.substring(1));
+
+            ticket = TicketController.instance().search(id);
+        } catch(PersistenceException ex) {
+            // This branch is less likely to happen, really. It is already on the table.
+        }
+
+        return ticket.get();
     }
 
     /**
@@ -68,25 +93,19 @@ public final class TableController {
         }
     }
 
+    /**
+     *
+     * @param ticket
+     * @param o
+     * @return
+     */
     private static Object[] set(Ticket ticket, Object o[]) {
-        o[0] = "#" + ticket.getTicketId();
+        o[0] = "#" + ticket.getId();
         o[1] = ticket.getTitle();
-
-        switch (ticket.getTicketPriority()) {
-            case 0:
-                o[2] = "Baixa";
-                break;
-            case 1:
-                o[2] = "Média";
-                break;
-            case 2:
-                o[2] = "Alta";
-                break;
-        }
-
+        o[2] = ticket.getFormattedPriority(ticket.getPriority());
         o[3] = ticket.getIssuer().getName();
 
-        if (ticket.getSolved()) {
+        if (ticket.getSolved() == 1) {
             o[4] = "Sim";
         } else {
             o[4] = "Não";

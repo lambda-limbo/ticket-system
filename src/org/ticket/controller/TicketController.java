@@ -90,4 +90,17 @@ public class TicketController {
 
         return list;
     }
+
+    /**
+     * @brief Updates the TICKET_SOLVED ticket denoted by the ID
+     * @param id
+     * @throws PersistenceException
+     */
+    public void solve(long id) throws PersistenceException {
+
+    }
+
+    public void solve(Ticket t) throws PersistenceException {
+        ticketDAO.update(t);
+    }
 }
