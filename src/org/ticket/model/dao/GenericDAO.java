@@ -40,20 +40,24 @@ public class GenericDAO<T> implements IGenericDAO<T> {
     /**
      * @brief Updates a field of a class on the
      * @param objClass The class object to be updated.
-     * @param searchFieldName
      * @param updateFieldName
      * @param value The new value to be set on fieldName
      * @param pkey The pkey of the row to be updated.
      * @return The new object updated
      */
-    public int update(Class objClass, String searchFieldName, String updateFieldName, String value, int pkey)
+    public int update(Class objClass, String updateFieldName, String value, int pkey)
             throws PersistenceException {
 
-        String query_string = "UPDATE" + objClass.getTypeName() + "t SET" + updateFieldName + " = " + value + "t WHERE "
-                + updateFieldName + " = " + pkey;
+
+        String query_string = "UPDATE " + objClass.getTypeName() + " SET " + updateFieldName + " = " + value +
+                " WHERE " + updateFieldName + " = " + pkey;
         Query query = manager.createQuery(query_string);
 
-        return query.executeUpdate();
+        manager.getTransaction().begin();
+        int ret = query.executeUpdate();
+        manager.getTransaction().commit();
+
+        return ret;
     }
 
     public int update(T object) {
