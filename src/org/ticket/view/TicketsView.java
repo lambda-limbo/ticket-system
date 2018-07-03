@@ -1,10 +1,13 @@
 package org.ticket.view;
 
 import org.ticket.controller.TableController;
+import org.ticket.controller.TicketController;
 import org.ticket.model.Ticket;
 import org.ticket.model.User;
 import org.ticket.model.utils.Session;
+import org.ticket.model.utils.Tuple;
 
+import javax.persistence.Table;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +17,7 @@ public class TicketsView implements ActionListener {
     private JFrame frame;
     private JPanel panel;
 
-    TicketSystemTableModel tst = new TicketSystemTableModel();
+    private static TicketSystemTableModel tst = new TicketSystemTableModel();
 
     private JTable ttickets;
     private JScrollPane sptable = new JScrollPane(ttickets);
@@ -77,7 +80,6 @@ public class TicketsView implements ActionListener {
         // Fill the table with some tickets
         try {
             TableController.fill(tst);
-
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Um erro ocorreu, relate ao desenvolvedor a " +
                             "seguinte ensagem: " + ex.getMessage() + ".",
@@ -98,15 +100,33 @@ public class TicketsView implements ActionListener {
 
         if (e.getSource().equals(bopen)) {
             // TODO: Get the ticket ID from the selected row
-            new OpenTicket(new Ticket("Exemplo chamado", "Muito conteudo", false,
-                    Ticket.TicketPriority.HIGH, Session.user));
+            int row = ttickets.getSelectedRow();
+
+            if (row == -1) {
+                    JOptionPane.showMessageDialog(null, "Selecione um chamado",
+                            "Erro de seleção", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    Ticket t = TableController.getSelectedTicket(tst, row);
+                    new OpenTicket(t);
+            }
         }
 
         if (e.getSource().equals(bsolve)) {
             // TODO: Remove row from the tickets table.
             // TODO: We should also create some kind of filter to filter information (?).
-            ttickets.getSelectedRow();
+            System.out.println(ttickets.getSelectedRow());
 
+            int row = ttickets.getSelectedRow();
+
+            if (row == -1) {
+                JOptionPane.showMessageDialog(null, "Selecione um chamado",
+                        "Erro de seleção", JOptionPane.WARNING_MESSAGE);
+            } else {
+                Ticket t = TableController.getSelectedTicket(tst, row);
+                t.setSolved(1);
+                TicketController.instance().solve(t);
+                update();
+            }
         }
 
         if (e.getSource().equals(bsearch)) {
@@ -114,17 +134,30 @@ public class TicketsView implements ActionListener {
                 Integer n;
 
                 if (tfsearch.getText().length() == 0) {
-                    n = -1;
+                    TableController.fill(tst);
                 } else {
                     n = new Integer(tfsearch.getText());
+                    Tuple<String, Boolean> resp = TableController.filter(tst, n);
+
+                    if (!resp.second) {
+                        JOptionPane.showMessageDialog(null, resp.first, "Chamado não encontrado",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
 
-                TableController.filter(tst, n);
             } catch(NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Insira somente números",
                         "Erro de conversão", JOptionPane.ERROR_MESSAGE);
+                tfsearch.setText("");
+                tfsearch.grabFocus();
                 ex.printStackTrace();
             }
         }
+    }
+
+    static void update() {
+
+        TableController.fill(tst);
+        TableController.fill(tst);
     }
 }

@@ -1,6 +1,5 @@
 package org.ticket.view;
 
-import org.ticket.controller.TableController;
 import org.ticket.controller.TicketController;
 import org.ticket.model.Ticket;
 import org.ticket.model.utils.Session;
@@ -59,8 +58,6 @@ public class CreateTicket implements ActionListener {
         panel.add(ldescription);
 
         spproblem.setBounds(30, 140, 640, 280);
-        taproblem.setLineWrap(true);
-        taproblem.setWrapStyleWord(true);
         panel.add(spproblem);
 
         bcreate.setBounds(550, 428, 120, 30);
@@ -97,7 +94,7 @@ public class CreateTicket implements ActionListener {
 
             TicketController tc = TicketController.instance();
 
-            Ticket t = new Ticket(tftitle.getText(), taproblem.getText(), false, tp, Session.user);
+            Ticket t = new Ticket(tftitle.getText(), taproblem.getText(), 0, tp, Session.user);
 
             Tuple<String, Boolean> resp = tc.save(t);
 
@@ -110,6 +107,7 @@ public class CreateTicket implements ActionListener {
                 frame.dispose();
                 JOptionPane.showMessageDialog(null, resp.first, "Sucesso ao criar ticket",
                         JOptionPane.INFORMATION_MESSAGE);
+                TicketsView.update();
             }
 
             enable();

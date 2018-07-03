@@ -90,7 +90,7 @@ public class MainWindow implements ActionListener {
 
             for (int i = 0; i < tickets.size(); i++) {
                 Ticket ticket = tickets.get(i);
-                text[i] = "#" + ticket.getTicketId() + " Título: " + ticket.getTitle() + " Criado por: " +
+                text[i] = "#" + ticket.getId() + " Título: " + ticket.getTitle() + " Criado por: " +
                         ticket.getIssuer().getName() + "";
                 ltickets.get(i).setText(text[i]);
             }

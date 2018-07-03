@@ -17,7 +17,7 @@ public class Ticket {
     @Column(name="TICKET_CONTENT", nullable = false)
     private String content;
     @Column(name="TICKET_SOLVED", nullable = false)
-    private boolean solved;
+    private int solved;
 
     @OneToOne
     @JoinColumn(name = "TICKET_ISSUERID", nullable = false)
@@ -37,7 +37,7 @@ public class Ticket {
 
     protected Ticket() {}
 
-    public Ticket(String title, String content, boolean solved, TicketPriority ticketPriority, User issuer) {
+    public Ticket(String title, String content, int solved, TicketPriority ticketPriority, User issuer) {
         this.title = title;
         this.content = content;
         this.solved = solved;
@@ -46,7 +46,7 @@ public class Ticket {
         this.issuer = issuer;
     }
 
-    public long getTicketId() {
+    public long getId() {
         return id;
     }
 
@@ -58,15 +58,37 @@ public class Ticket {
         return content;
     }
 
-    public boolean getSolved() {
+    public int getSolved() {
         return solved;
+    }
+
+    public void setSolved(int b) {
+        solved = b;
     }
 
     public User getIssuer() {
         return issuer;
     }
 
-    public int getTicketPriority() {
+    public int getPriority() {
         return priority;
+    }
+
+    public String getFormattedPriority(int ordinal) {
+        String r = "";
+
+        switch (ordinal) {
+            case 0:
+                r = "Baixa";
+                break;
+            case 1:
+                r = "Média";
+                break;
+            case 2:
+                r= "Alta";
+                break;
+        }
+
+        return r;
     }
 }

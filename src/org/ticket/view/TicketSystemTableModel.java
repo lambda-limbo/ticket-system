@@ -39,4 +39,8 @@ public class TicketSystemTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int column) {
         return data.get(row)[column];
     }
+
+    public Object[] getValue(int row) {
+        return data.get(row);
+    }
 }
