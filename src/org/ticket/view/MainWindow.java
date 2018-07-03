@@ -71,16 +71,16 @@ public class MainWindow implements ActionListener {
             ltickets.add(i, new JLabel());
         }
 
-        ltickets.get(0).setBounds(300, 100, 400, 30);
+        ltickets.get(0).setBounds(300, 100, 390, 30);
         panel.add(ltickets.get(0));
 
-        ltickets.get(1).setBounds(300, 150, 400, 30);
+        ltickets.get(1).setBounds(300, 150, 390, 30);
         panel.add(ltickets.get(1));
 
-        ltickets.get(2).setBounds(300, 200, 400, 30);
+        ltickets.get(2).setBounds(300, 200, 390, 30);
         panel.add(ltickets.get(2));
 
-        ltickets.get(3).setBounds(300, 250, 400, 30);
+        ltickets.get(3).setBounds(300, 250, 390, 30);
         panel.add(ltickets.get(3));
 
         try {
