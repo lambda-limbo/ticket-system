@@ -107,7 +107,7 @@ public class CreateTicket implements ActionListener {
                 frame.dispose();
                 JOptionPane.showMessageDialog(null, resp.first, "Sucesso ao criar ticket",
                         JOptionPane.INFORMATION_MESSAGE);
-                TicketsView.update();
+                TicketsView.updateTable();
             }
 
             enable();

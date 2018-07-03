@@ -7,7 +7,6 @@ import org.ticket.model.User;
 import org.ticket.model.utils.Session;
 import org.ticket.model.utils.Tuple;
 
-import javax.persistence.Table;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -124,8 +123,8 @@ public class TicketsView implements ActionListener {
             } else {
                 Ticket t = TableController.getSelectedTicket(tst, row);
                 t.setSolved(1);
-                TicketController.instance().solve(t);
-                update();
+                TicketController.instance().solve(t.getId());
+                updateTable();
             }
         }
 
@@ -134,7 +133,7 @@ public class TicketsView implements ActionListener {
                 Integer n;
 
                 if (tfsearch.getText().length() == 0) {
-                    TableController.fill(tst);
+                    updateTable();
                 } else {
                     n = new Integer(tfsearch.getText());
                     Tuple<String, Boolean> resp = TableController.filter(tst, n);
@@ -145,7 +144,7 @@ public class TicketsView implements ActionListener {
                     }
                 }
 
-            } catch(NumberFormatException ex) {
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Insira somente números",
                         "Erro de conversão", JOptionPane.ERROR_MESSAGE);
                 tfsearch.setText("");
@@ -155,8 +154,7 @@ public class TicketsView implements ActionListener {
         }
     }
 
-    static void update() {
-
+    static void updateTable() {
         TableController.fill(tst);
         TableController.fill(tst);
     }

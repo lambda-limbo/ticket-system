@@ -1,5 +1,6 @@
 package org.ticket.view;
 
+import org.ticket.controller.TicketController;
 import org.ticket.model.Ticket;
 
 import javax.swing.*;
@@ -23,10 +24,13 @@ public class OpenTicket implements ActionListener {
     private JButton bsolve = new JButton("Resolver");
     private JButton bclose = new JButton("Fechar");
 
+    private Ticket t;
 
     public OpenTicket(Ticket t) {
         frame = new JFrame();
         panel = new JPanel();
+
+        this.t = t;
 
         frame.setTitle("Chamado #" + t.getId() + " - Ticket System");
         frame.setResizable(false);
@@ -77,6 +81,9 @@ public class OpenTicket implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(bsolve)) {
             // TODO: Solve the issue, close the window and then get back to the TicketsView
+            t.setSolved(1);
+            TicketController.instance().solve(t.getId());
+            TicketsView.updateTable();
             frame.dispose();
         }
 
