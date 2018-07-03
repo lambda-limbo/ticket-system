@@ -97,10 +97,6 @@ public class TicketController {
      * @throws PersistenceException
      */
     public void solve(long id) throws PersistenceException {
-
-    }
-
-    public void solve(Ticket t) throws PersistenceException {
-        ticketDAO.update(t);
+        ticketDAO.update(Ticket.class, "solved", "1", (int)id);
     }
 }
