@@ -1,5 +1,6 @@
 package org.ticket.view;
 
+import org.ticket.controller.TableController;
 import org.ticket.controller.TicketController;
 import org.ticket.model.Ticket;
 import org.ticket.model.utils.Session;
@@ -22,7 +23,8 @@ public class CreateTicket implements ActionListener {
 
     private JComboBox<String> cbpriority;
 
-    private JTextField tfproblem = new JTextField();
+    private JTextArea taproblem = new JTextArea();
+    private JScrollPane spproblem = new JScrollPane(taproblem);
 
     private JButton bcreate = new JButton("Criar Chamado");
 
@@ -56,8 +58,10 @@ public class CreateTicket implements ActionListener {
         ldescription.setBounds(30, 110, 640, 30);
         panel.add(ldescription);
 
-        tfproblem.setBounds(30, 140, 640, 280);
-        panel.add(tfproblem);
+        spproblem.setBounds(30, 140, 640, 280);
+        taproblem.setLineWrap(true);
+        taproblem.setWrapStyleWord(true);
+        panel.add(spproblem);
 
         bcreate.setBounds(550, 428, 120, 30);
         panel.add(bcreate);
@@ -93,11 +97,11 @@ public class CreateTicket implements ActionListener {
 
             TicketController tc = TicketController.instance();
 
-            Ticket t = new Ticket(tftitle.getText(), tfproblem.getText(), false, tp, Session.user);
+            Ticket t = new Ticket(tftitle.getText(), taproblem.getText(), false, tp, Session.user);
 
             Tuple<String, Boolean> resp = tc.save(t);
 
-            if(!resp.second) {
+            if  (!resp.second) {
                 JOptionPane.showMessageDialog(null, resp.first, "Erro ao criar ticket",
                         JOptionPane.ERROR_MESSAGE);
                 tftitle.grabFocus();
