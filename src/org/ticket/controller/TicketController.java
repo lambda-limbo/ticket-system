@@ -92,6 +92,52 @@ public class TicketController {
     }
 
     /**
+     *
+     * @param author
+     * @return
+     * @throws PersistenceException
+     */
+    public List<Ticket> list(String author) throws PersistenceException {
+        Optional<List<Ticket>> tickets = Optional.ofNullable(ticketDAO.search(Ticket.class));
+
+        List<Ticket> list = new Vector<>();
+
+        // verify if the size of the list retrieved is greater than the limit itself
+        if (tickets.isPresent()) {
+            for (Ticket t : tickets.get()) {
+                if (t.getIssuer().getName().equals(author)) {
+                    list.add(t);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     *
+     * @param priority
+     * @return
+     * @throws PersistenceException
+     */
+    public List<Ticket> list(Ticket.TicketPriority priority) throws PersistenceException {
+        Optional<List<Ticket>> tickets = Optional.ofNullable(ticketDAO.search(Ticket.class));
+
+        List<Ticket> list = new Vector<>();
+
+        // verify if the size of the list retrieved is greater than the limit itself
+        if (tickets.isPresent()) {
+            for (Ticket t : tickets.get()) {
+                if (t.getPriority() == priority.ordinal()) {
+                    list.add(t);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    /**
      * @brief Updates the TICKET_SOLVED ticket denoted by the ID
      * @param id
      * @throws PersistenceException
