@@ -182,8 +182,7 @@ public class TicketsView implements ActionListener, KeyListener {
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(null, "Insira somente números",
                                 "Erro de conversão", JOptionPane.ERROR_MESSAGE);
-                        tfsearch.setText("");
-                        tfsearch.grabFocus();
+                        clearSearch();
                         ex.printStackTrace();
                     }
                     break;
@@ -195,6 +194,7 @@ public class TicketsView implements ActionListener, KeyListener {
                     if (!resp.second) {
                         JOptionPane.showMessageDialog(null, resp.first, "Chamado não encontrado",
                                 JOptionPane.INFORMATION_MESSAGE);
+                        clearSearch();
                     }
                     break;
                 case 2:
@@ -217,8 +217,7 @@ public class TicketsView implements ActionListener, KeyListener {
                             JOptionPane.showMessageDialog(null, "A prioridade " + priority +
                                     "não existe", "Erro de busca", JOptionPane.ERROR_MESSAGE);
                             search = false;
-                            tfsearch.setText("");
-                            tfsearch.grabFocus();
+                            clearSearch();
                             break;
                     }
 
@@ -233,5 +232,10 @@ public class TicketsView implements ActionListener, KeyListener {
                     break;
             }
         }
+    }
+
+    private void clearSearch() {
+        tfsearch.setText("");
+        tfsearch.grabFocus();
     }
 }

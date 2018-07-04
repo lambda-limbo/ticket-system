@@ -76,6 +76,10 @@ public final class TableController {
             List<Ticket> tickets = tc.list(author);
             clear(tst);
 
+            if (tickets.size() == 0) {
+                throw new PersistenceException();
+            }
+
             for (Ticket t : tickets) {
                 Object o[] = new Object[5];
 
@@ -85,7 +89,7 @@ public final class TableController {
 
         } catch(PersistenceException ex) {
             // No ticket found remove Filter (This is the default operation)
-            resp.first = "Nenhum chamado encontrado com o nome " + author + ".";
+            resp.first = "Nenhum chamado encontrado com o autor de nome " + author + ".";
             resp.second = false;
             return resp;
         }
