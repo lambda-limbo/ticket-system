@@ -6,7 +6,7 @@ public class Properties {
 
     private static final long MAJOR = 1;
     private static final long MINOR = 0;
-    private static final long PATCH = 0;
+    private static final long PATCH = 1;
 
     private Properties() {}
 
