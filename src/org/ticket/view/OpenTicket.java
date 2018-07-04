@@ -2,6 +2,8 @@ package org.ticket.view;
 
 import org.ticket.controller.TicketController;
 import org.ticket.model.Ticket;
+import org.ticket.model.User;
+import org.ticket.model.utils.Session;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -70,6 +72,10 @@ public class OpenTicket implements ActionListener {
 
         bsolve.addActionListener(this);
         bclose.addActionListener(this);
+
+        if (Session.user.getUserType() == User.UserType.client) {
+            bsolve.setEnabled(false);
+        }
 
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(panel);
