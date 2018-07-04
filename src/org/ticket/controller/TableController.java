@@ -62,6 +62,72 @@ public final class TableController {
         return resp;
     }
 
+    /**
+     *
+     * @param tst
+     * @param author
+     * @return
+     */
+    public static Tuple<String, Boolean> filter(TicketSystemTableModel tst, String author) {
+
+        Tuple<String, Boolean> resp = new Tuple<>("", true);
+
+        try {
+            List<Ticket> tickets = tc.list(author);
+            clear(tst);
+
+            if (tickets.size() == 0) {
+                throw new PersistenceException();
+            }
+
+            for (Ticket t : tickets) {
+                Object o[] = new Object[5];
+
+                set(t, o);
+                tst.push(o);
+            }
+
+        } catch(PersistenceException ex) {
+            // No ticket found remove Filter (This is the default operation)
+            resp.first = "Nenhum chamado encontrado com o autor de nome " + author + ".";
+            resp.second = false;
+            return resp;
+        }
+
+        return resp;
+    }
+
+    /**
+     *
+     * @param tst
+     * @param tp
+     * @return
+     */
+    public static Tuple<String, Boolean> filter(TicketSystemTableModel tst, Ticket.TicketPriority tp) {
+
+        Tuple<String, Boolean> resp = new Tuple<>("", true);
+
+        try {
+            List<Ticket> tickets = tc.list(tp);
+            clear(tst);
+
+            for (Ticket t : tickets) {
+                Object o[] = new Object[5];
+
+                set(t, o);
+                tst.push(o);
+            }
+
+        } catch(PersistenceException ex) {
+            // No ticket found remove Filter (This is the default operation)
+            resp.first = "Nenhum chamado encontrado com a prioridade pesquisada.";
+            resp.second = false;
+            return resp;
+        }
+
+        return resp;
+    }
+
     public static Ticket getSelectedTicket(TicketSystemTableModel tst, int index) {
 
         Optional<Ticket> ticket = null;

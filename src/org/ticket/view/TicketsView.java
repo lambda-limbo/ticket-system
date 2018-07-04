@@ -10,8 +10,10 @@ import org.ticket.model.utils.Tuple;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class TicketsView implements ActionListener {
+public class TicketsView implements ActionListener, KeyListener {
 
     private JFrame frame;
     private JPanel panel;
@@ -21,11 +23,13 @@ public class TicketsView implements ActionListener {
     private JTable ttickets;
     private JScrollPane sptable = new JScrollPane(ttickets);
 
-    private JLabel lsearch = new JLabel("Buscar por identificador");
+    private JLabel lsearch = new JLabel("Buscar por: ");
 
     private JTextField tfsearch = new JTextField();
 
-    private JButton bsearch = new JButton("Buscar");
+    private JComboBox cbfilter;
+
+    private JButton bsearch = new JButton("Pesquisar");
     private JButton bcreate = new JButton("Novo Chamado");
     private JButton bsolve = new JButton("Resolver Chamado");
     private JButton bopen = new JButton("Abrir Chamado");
@@ -45,27 +49,34 @@ public class TicketsView implements ActionListener {
         lsearch.setBounds(30, 20, 150, 30);
         panel.add(lsearch);
 
-        tfsearch.setBounds(30, 45, 550, 30);
+        tfsearch.setBounds(30, 65, 530, 30);
         panel.add(tfsearch);
 
-        bsearch.setBounds(590, 45, 90, 30);
+        bsearch.setBounds(575, 65, 90, 30);
         panel.add(bsearch);
 
-        sptable.setBounds(30, 100, 650, 320);
+        String filters[] = {"Por identificador", "Por Autor", "Por Prioridade"};
+        cbfilter = new JComboBox(filters);
+
+        cbfilter.setBounds(100, 20, 120, 35);
+        panel.add(cbfilter);
+
+        sptable.setBounds(30, 100, 635, 320);
         panel.add(sptable);
 
         sptable.getViewport().add(ttickets);
-
         ttickets.setFillsViewportHeight(true);
 
         bcreate.setBounds(30, 430, 100, 30);
         panel.add(bcreate);
 
-        bopen.setBounds(450, 430, 100, 30);
+        bopen.setBounds(440, 430, 100, 30);
         panel.add(bopen);
 
-        bsolve.setBounds(560, 430, 120, 30);
+        bsolve.setBounds(550, 430, 120, 30);
         panel.add(bsolve);
+
+        tfsearch.addKeyListener(this);
 
         bsearch.addActionListener(this);
         bcreate.addActionListener(this);
@@ -129,33 +140,102 @@ public class TicketsView implements ActionListener {
         }
 
         if (e.getSource().equals(bsearch)) {
-            try {
-                Integer n;
-
-                if (tfsearch.getText().length() == 0) {
-                    updateTable();
-                } else {
-                    n = new Integer(tfsearch.getText());
-                    Tuple<String, Boolean> resp = TableController.filter(tst, n);
-
-                    if (!resp.second) {
-                        JOptionPane.showMessageDialog(null, resp.first, "Chamado não encontrado",
-                                JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Insira somente números",
-                        "Erro de conversão", JOptionPane.ERROR_MESSAGE);
-                tfsearch.setText("");
-                tfsearch.grabFocus();
-                ex.printStackTrace();
-            }
+            filter(cbfilter.getSelectedIndex());
         }
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) { }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getSource().equals(tfsearch) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            bsearch.dispatchEvent(e);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
 
     static void updateTable() {
         TableController.fill(tst);
         TableController.fill(tst);
+    }
+
+    private void filter(int index) {
+        if (tfsearch.getText().length() == 0) {
+            updateTable();
+        } else {
+            switch (index) {
+                case 0:
+                    try {
+                        Integer n;
+
+                        n = new Integer(tfsearch.getText());
+                        Tuple<String, Boolean> resp = TableController.filter(tst, n);
+
+                        if (!resp.second) {
+                            JOptionPane.showMessageDialog(null, resp.first, "Chamado não encontrado",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Insira somente números",
+                                "Erro de conversão", JOptionPane.ERROR_MESSAGE);
+                        clearSearch();
+                        ex.printStackTrace();
+                    }
+                    break;
+                case 1:
+                    String author = tfsearch.getText();
+
+                    Tuple<String, Boolean> resp = TableController.filter(tst, author);
+
+                    if (!resp.second) {
+                        JOptionPane.showMessageDialog(null, resp.first, "Chamado não encontrado",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        clearSearch();
+                    }
+                    break;
+                case 2:
+                    Ticket.TicketPriority tp = Ticket.TicketPriority.LOW;
+                    String priority = tfsearch.getText();
+
+                    boolean search = true;
+
+                    switch (priority) {
+                        case "Baixa":
+                            tp = Ticket.TicketPriority.LOW;
+                            break;
+                        case "Média":
+                            tp = Ticket.TicketPriority.MEDIUM;
+                            break;
+                        case "Alta":
+                            tp = Ticket.TicketPriority.HIGH;
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "A prioridade " + priority +
+                                    "não existe", "Erro de busca", JOptionPane.ERROR_MESSAGE);
+                            search = false;
+                            clearSearch();
+                            break;
+                    }
+
+                    if (search) {
+                        resp = TableController.filter(tst, tp);
+
+                        if (!resp.second) {
+                            JOptionPane.showMessageDialog(null, resp.first, "Chamado não encontrado",
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void clearSearch() {
+        tfsearch.setText("");
+        tfsearch.grabFocus();
     }
 }
