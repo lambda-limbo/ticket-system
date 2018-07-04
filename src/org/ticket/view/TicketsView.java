@@ -10,8 +10,10 @@ import org.ticket.model.utils.Tuple;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class TicketsView implements ActionListener {
+public class TicketsView implements ActionListener, KeyListener {
 
     private JFrame frame;
     private JPanel panel;
@@ -66,6 +68,8 @@ public class TicketsView implements ActionListener {
 
         bsolve.setBounds(560, 430, 120, 30);
         panel.add(bsolve);
+
+        tfsearch.addKeyListener(this);
 
         bsearch.addActionListener(this);
         bcreate.addActionListener(this);
@@ -158,4 +162,17 @@ public class TicketsView implements ActionListener {
         TableController.fill(tst);
         TableController.fill(tst);
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) { }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getSource().equals(tfsearch) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            bsearch.dispatchEvent(e);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }
